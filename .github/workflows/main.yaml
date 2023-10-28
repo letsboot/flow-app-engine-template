@@ -11,7 +11,7 @@ on:
 env:
   CI_PROJECT_DIR: ${{ github.workspace }}
   CI_PROJECT_NAME: ${{ github.repository }}
-  CI_REGISTRY_IMAGE: ghcr.io/${{ github.repository }}" # Replace with your Docker image registry
+  CI_REGISTRY_IMAGE: ghcr.io/${{ github.repository }}/app" # Replace with your Docker image registry
   FLOW_APP_ENGINE_USER: ${{ secrets.FLOW_APP_ENGINE_USER }}
   FLOW_APP_ENGINE_PASSWORD: ${{ secrets.FLOW_APP_ENGINE_PASSWORD }}
   FLOW_REGISTRY_USER: "USERNAME"
@@ -21,20 +21,20 @@ env:
   IMAGE_TAG: "latest"
 
 jobs:
-  # build:
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #     - uses: actions/checkout@master
-  #     - name: Kaniko build
-  #       uses: aevea/action-kaniko@master
-  #       with:
-  #         registry: ghcr.io
-  #         password: ${{ secrets.GITHUB_TOKEN }}
-  #         image: ${{ github.repository }}
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@master
+      - name: Kaniko build
+        uses: aevea/action-kaniko@master
+        with:
+          registry: ghcr.io
+          password: ${{ secrets.GITHUB_TOKEN }}
+          image: app
 
   deploy:
     runs-on: ubuntu-latest
-    # needs: build
+    needs: build
     container:
       image: letsbootch/jelastic-cli:latest
     steps:
