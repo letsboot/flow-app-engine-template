@@ -23,11 +23,11 @@ jobs:
       - uses: actions/checkout@master
       - name: Kaniko build
         uses: aevea/action-kaniko@master
-        tag: latest
         with:
           registry: ghcr.io
           password: ${{ secrets.GITHUB_TOKEN }}
           image: app
+          tag_with_latest: true
 
   deploy:
     runs-on: ubuntu-latest
