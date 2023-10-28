@@ -14,7 +14,7 @@ env:
   FLOW_REGISTRY_USER: "USERNAME"
   FLOW_REGISTRY_PASSWORD: ${{ secrets.GITHUB_TOKEN }}
   CI_REGISTRY: "ghcr.io" # Replace with your Docker registry URL
-  IMAGE_TAG: "latest"
+  IMAGE_TAG: "main"
 
 jobs:
   build:
