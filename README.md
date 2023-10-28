@@ -2,7 +2,7 @@
 
 Unofiicial template for deploying a Node.js application to the Flow App Engine.
 
-## Usage:
+## Usage GitLab:
 
 1. Fork repository or copy content
 
@@ -25,3 +25,18 @@ Unofiicial template for deploying a Node.js application to the Flow App Engine.
 
 Hint:
 For more advanced environment options, we recommend to create a test environment manually in the UI of the Flow App Engine, and look at the JSON in the task list (button in the bottom left).
+
+## Usage GitHub:
+
+WARNING: Hackathon quick n dirty version, no warranty, no support, no nothing. Use at your own risk.
+
+1. Fork repository or copy content
+
+2. Create the following GitHub Actions Repository secrets in project settings
+
+  - FLOW_APP_ENGINE_USER - User for the Flow App Engine
+  - FLOW_APP_ENGINE_PASSWORD - Dynamically generated password for the Flow App Engine (alternatively use App Engine Token)
+
+3. Push any change to your repository (i.e. changing the response in the index.js)
+
+4. Watch the pipeline and open the URL provided at the end in your Browser

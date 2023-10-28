@@ -46,7 +46,7 @@ jobs:
     - name: Adjust Flow Environment
       run: |
         export SHORT_DOMAIN=$(echo $GITHUB_REPOSITORY | awk -F / '{print $2}')
-        export IMAGE="ghcr.io/$GITHUB_REPOSITORY/app"
+        export IMAGE="$GITHUB_REPOSITORY/app"
         sed -ie "s|REPLACE-WITH-SHORT-DOMAIN|$SHORT_DOMAIN|g" flow_environment.json
         sed -ie "s|REPLACE-WITH-IMAGE|${IMAGE}|g" flow_environment.json
         sed -ie "s|REPLACE-WITH-REGISTRY-USER|${FLOW_REGISTRY_USER}|g" flow_environment.json
