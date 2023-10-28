@@ -46,19 +46,19 @@ jobs:
     - name: Adjust Flow Environment
       run: |
         export SHORT_DOMAIN=$(echo $GITHUB_REPOSITORY | awk -F / '{print $2}')
-        export CI_REGISTRY_IMAGE="ghcr.io/$GITHUB_REPOSITORY/app"
+        export IMAGE="ghcr.io/$GITHUB_REPOSITORY/app"
         sed -ie "s|REPLACE-WITH-SHORT-DOMAIN|$SHORT_DOMAIN|g" flow_environment.json
-        sed -ie "s|REPLACE-WITH-IMAGE|${CI_PROJECT_PATH}|g" flow_environment.json
+        sed -ie "s|REPLACE-WITH-IMAGE|${IMAGE}|g" flow_environment.json
         sed -ie "s|REPLACE-WITH-REGISTRY-USER|${FLOW_REGISTRY_USER}|g" flow_environment.json
         sed -ie "s|REPLACE-WITH-REGISTRY-PASSWORD|${FLOW_REGISTRY_PASSWORD}|g" flow_environment.json
         sed -ie "s|REPLACE-WITH-REGISTRY-URL|${CI_REGISTRY}|g" flow_environment.json
         sed -ie "s|REPLACE-WITH-TAG|${IMAGE_TAG}|g" flow_environment.json
         cat flow_environment.json
-    - name: Create environment
+    - name: Redeploy containers
       run: |
         export SHORT_DOMAIN=$(echo $GITHUB_REPOSITORY | awk -F / '{print $2}')
         ~/jelastic/environment/control/getbasicenvsinfo|grep "$SHORT_DOMAIN" && ~/jelastic/environment/control/redeploycontainers --envName "$SHORT_DOMAIN" --nodeGroup cp --tag $IMAGE_TAG || true
-    - name: Redeploy containers
+    - name: Create environment
       run: |
         export SHORT_DOMAIN=$(echo $GITHUB_REPOSITORY | awk -F / '{print $2}')
         ~/jelastic/environment/control/getbasicenvsinfo|grep "$SHORT_DOMAIN" || ~/jelastic/environment/control/createenvironment --myparams flow_environment.json || true
