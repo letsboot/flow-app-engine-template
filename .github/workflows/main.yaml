@@ -14,7 +14,7 @@ env:
   FLOW_REGISTRY_USER: "USERNAME"
   FLOW_REGISTRY_PASSWORD: ${{ secrets.GITHUB_TOKEN }}
   CI_REGISTRY: "ghcr.io" # Replace with your Docker registry URL
-  IMAGE_TAG: "main"
+  IMAGE_TAG: "latest"
 
 jobs:
   build:
@@ -23,6 +23,7 @@ jobs:
       - uses: actions/checkout@master
       - name: Kaniko build
         uses: aevea/action-kaniko@master
+        tag: latest
         with:
           registry: ghcr.io
           password: ${{ secrets.GITHUB_TOKEN }}
