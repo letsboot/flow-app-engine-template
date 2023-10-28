@@ -25,7 +25,7 @@ jobs:
         with:
           registry: ghcr.io
           password: ${{ secrets.GITHUB_TOKEN }}
-          image: kaniko
+          image: ${{ github.repository }}
 
   deploy:
     runs-on: ubuntu-latest
