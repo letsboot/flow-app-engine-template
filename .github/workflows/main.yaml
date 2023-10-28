@@ -42,7 +42,9 @@ jobs:
       uses: actions/checkout@v2
     - name: Copy Jelastic
       run: |
-        cp -vr /root/jelastic* ~/ 
+        cp -r /root/jelastic* ~/
+        mkdir -p ~/.config/jelastic
+        cp -r /root/.config/jelastic/* ~/.config/jelastic/
     - name: Login to Flow
       run: echo y| ~/jelastic/users/authentication/signin --login $FLOW_APP_ENGINE_USER --password $FLOW_APP_ENGINE_PASSWORD --platformUrl https://app.appengine.flow.ch/
     - name: Adjust Flow Environment
