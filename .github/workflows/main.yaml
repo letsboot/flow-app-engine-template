@@ -37,6 +37,7 @@ jobs:
       uses: actions/checkout@v2
     - name: Deploy
       run: |
+        ls /root/
         echo y| ~/jelastic/users/authentication/signin --login $FLOW_APP_ENGINE_USER --password $FLOW_APP_ENGINE_PASSWORD --platformUrl https://app.appengine.flow.ch/
         SHORT_DOMAIN="$CI_PROJECT_NAME"
         IMAGE_TAG="latest"
