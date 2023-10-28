@@ -1,3 +1,6 @@
+# This workflow was quickly converted from github-cli.yml to github-actions in a hackathon setting.
+# No warranty and now support is provided. Use at your own risk.
+
 name: Flow App Engine Template
 
 on:
@@ -37,7 +40,8 @@ jobs:
       uses: actions/checkout@v2
     - name: Deploy
       run: |
-        echo y| /root/jelastic/users/authentication/signin --login $FLOW_APP_ENGINE_USER --password $FLOW_APP_ENGINE_PASSWORD --platformUrl https://app.appengine.flow.ch/
+        cp -vr /root/jelastic* ~/ 
+        echo y| ~/jelastic/users/authentication/signin --login $FLOW_APP_ENGINE_USER --password $FLOW_APP_ENGINE_PASSWORD --platformUrl https://app.appengine.flow.ch/
         SHORT_DOMAIN="$CI_PROJECT_NAME"
         IMAGE_TAG="latest"
         
@@ -51,7 +55,7 @@ jobs:
         cat flow_environment.json
 
         # Deploy or create environment
-        /root/jelastic/environment/control/getbasicenvsinfo|grep "$SHORT_DOMAIN" && /root/jelastic/environment/control/redeploycontainers --envName "$SHORT_DOMAIN" --nodeGroup cp --tag $IMAGE_TAG || /root/jelastic/environment/control/createenvironment --myparams flow_environment.json
-        /root/jelastic/environment/control/getbasicenvsinfo|grep "$SHORT_DOMAIN" || exit 1
+        ~/jelastic/environment/control/getbasicenvsinfo|grep "$SHORT_DOMAIN" && ~/jelastic/environment/control/redeploycontainers --envName "$SHORT_DOMAIN" --nodeGroup cp --tag $IMAGE_TAG || ~/jelastic/environment/control/createenvironment --myparams flow_environment.json
+        ~/jelastic/environment/control/getbasicenvsinfo|grep "$SHORT_DOMAIN" || exit 1
         echo "## SUCCESSFULLY DEPLOYED!"
         echo "URL: https://$SHORT_DOMAIN.appengine.flow.ch"
