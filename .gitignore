@@ -1,0 +1,10 @@
+# macOS ignores
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Node.js ignores
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*

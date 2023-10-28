@@ -1,0 +1,31 @@
+{
+  "env": {
+      "ishaenabled": false,
+      "region": "vz7",
+      "shortdomain": "REPLACE-WITH-SHORT-DOMAIN",
+      "sslstate": true
+  },
+  "nodes": [{
+      "count": 1,
+      "diskLimit": 10,
+      "extip": 0,
+      "extipv6": 0,
+      "fixedCloudlets": 1,
+      "flexibleCloudlets": 3,
+      "image": "REPLACE-WITH-IMAGE",
+      "tag": "REPLACE-WITH-TAG",
+      "mission": "cp",
+      "nodeGroup": "cp",
+      "nodeType": "docker",
+      "env": {
+        "CUSTOM_VARIABLE": "your variables provided to the container go here"
+      },
+      "registry": {
+          "password": "REPLACE-WITH-REGISTRY-PASSWORD",
+          "url": "REPLACE-WITH-REGISTRY-URL",
+          "user": "REPLACE-WITH-REGISTRY-USER"
+      },
+      "restartDelay": 30,
+      "scalingMode": "STATELESS"
+  }]
+}

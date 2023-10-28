@@ -1,0 +1,44 @@
+build:
+  stage: build
+  image:
+    name: gcr.io/kaniko-project/executor:v1.14.0-debug
+    entrypoint: [""]
+  script:
+    - /kaniko/executor
+      --context "${CI_PROJECT_DIR}"
+      --dockerfile "${CI_PROJECT_DIR}/Dockerfile"
+      --destination "${CI_REGISTRY_IMAGE}:latest"
+
+deploy:
+  stage: deploy
+  image: letsbootch/jelastic-cli:latest
+  variables:
+    SHORT_DOMAIN:  "$CI_PROJECT_NAME"
+    IMAGE_TAG: latest
+  script: 
+    # login to app engine
+    - echo y| ~/jelastic/users/authentication/signin --login $FLOW_APP_ENGINE_USER --password $FLOW_APP_ENGINE_PASSWORD --platformUrl https://app.appengine.flow.ch/
+
+    # prepare environment config
+    - sed -ie "s|REPLACE-WITH-SHORT-DOMAIN|$SHORT_DOMAIN|g" flow_environment.json
+    - sed -ie "s|REPLACE-WITH-IMAGE|${CI_PROJECT_PATH}|g" flow_environment.json
+    - sed -ie "s|REPLACE-WITH-REGISTRY-USER|${FLOW_REGISTRY_USER}|g" flow_environment.json
+    - sed -ie "s|REPLACE-WITH-REGISTRY-PASSWORD|${FLOW_REGISTRY_PASSWORD}|g" flow_environment.json
+    - sed -ie "s|REPLACE-WITH-REGISTRY-URL|${CI_REGISTRY}|g" flow_environment.json
+    - sed -ie "s|REPLACE-WITH-TAG|${IMAGE_TAG}|g" flow_environment.json
+
+    # reploy containers if environment already exist
+    - ~/jelastic/environment/control/getbasicenvsinfo|grep "$SHORT_DOMAIN" && ~/jelastic/environment/control/redeploycontainers --envName "$SHORT_DOMAIN" --nodeGroup cp --tag $IMAGE_TAG
+
+    # creat environment if it doesn't already exist
+    - ~/jelastic/environment/control/getbasicenvsinfo|grep "$SHORT_DOMAIN" || ~/jelastic/environment/control/createenvironment --myparams flow_environment.json
+
+    # verify environment creation
+    - ~/jelastic/environment/control/getbasicenvsinfo|grep "$SHORT_DOMAIN" || exit 1
+
+    # return environment url
+    - echo "## SUCCESSFULLY DEPLOYED!"
+    - 'echo "URL: https://$SHORT_DOMAIN.appengine.flow.ch"'
+  rules:
+    - if: '$FLOW_REGISTRY_USER'
+      when: on_success
