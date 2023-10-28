@@ -16,16 +16,16 @@ env:
   CI_REGISTRY: "ghcr.io" # Replace with your Docker registry URL
 
 jobs:
-  build:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@master
-      - name: Kaniko build
-        uses: aevea/action-kaniko@master
-        with:
-          registry: ghcr.io
-          password: ${{ secrets.GITHUB_TOKEN }}
-          image: ${{ github.repository }}
+  # build:
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - uses: actions/checkout@master
+  #     - name: Kaniko build
+  #       uses: aevea/action-kaniko@master
+  #       with:
+  #         registry: ghcr.io
+  #         password: ${{ secrets.GITHUB_TOKEN }}
+  #         image: ${{ github.repository }}
 
   deploy:
     runs-on: ubuntu-latest
@@ -37,8 +37,7 @@ jobs:
       uses: actions/checkout@v2
     - name: Deploy
       run: |
-        ls /root/
-        echo y| ~/jelastic/users/authentication/signin --login $FLOW_APP_ENGINE_USER --password $FLOW_APP_ENGINE_PASSWORD --platformUrl https://app.appengine.flow.ch/
+        echo y| /root/jelastic/users/authentication/signin --login $FLOW_APP_ENGINE_USER --password $FLOW_APP_ENGINE_PASSWORD --platformUrl https://app.appengine.flow.ch/
         SHORT_DOMAIN="$CI_PROJECT_NAME"
         IMAGE_TAG="latest"
         
@@ -52,7 +51,7 @@ jobs:
         cat flow_environment.json
 
         # Deploy or create environment
-        ~/jelastic/environment/control/getbasicenvsinfo|grep "$SHORT_DOMAIN" && ~/jelastic/environment/control/redeploycontainers --envName "$SHORT_DOMAIN" --nodeGroup cp --tag $IMAGE_TAG || ~/jelastic/environment/control/createenvironment --myparams flow_environment.json
-        ~/jelastic/environment/control/getbasicenvsinfo|grep "$SHORT_DOMAIN" || exit 1
+        /root/jelastic/environment/control/getbasicenvsinfo|grep "$SHORT_DOMAIN" && /root/jelastic/environment/control/redeploycontainers --envName "$SHORT_DOMAIN" --nodeGroup cp --tag $IMAGE_TAG || /root/jelastic/environment/control/createenvironment --myparams flow_environment.json
+        /root/jelastic/environment/control/getbasicenvsinfo|grep "$SHORT_DOMAIN" || exit 1
         echo "## SUCCESSFULLY DEPLOYED!"
         echo "URL: https://$SHORT_DOMAIN.appengine.flow.ch"
