@@ -17,7 +17,7 @@ Unofiicial template for deploying a Node.js application to the Flow App Engine.
   - FLOW_APP_ENGINE_USER - User for the Flow App Engine
   - FLOW_APP_ENGINE_PASSWORD - Dynamically generated password for the Flow App Engine (alternatively use App Engine Token)
   - FLOW_REGISTRY_USER - Username of the GitLab Deploy Token
-  - FLOW_REGISTRY_PASSWORD - Password of the GitLab Deploy Token
+  - FLOW_REGISTRY_PASSWORD - GitLab Deploy Token
 
 6. Push any change to your repository (i.e. changing the response in the index.js)
 
@@ -32,11 +32,14 @@ WARNING: Hackathon quick n dirty version, no warranty, no support, no nothing. U
 
 1. Fork repository or copy content
 
-2. Create the following GitHub Actions Repository secrets in project settings
+2. Create a personal access token with only "read package" access, for APP ENGINE to pull your image.
+
+3. Create the following GitHub Actions Repository secrets in project settings
 
   - FLOW_APP_ENGINE_USER - User for the Flow App Engine
   - FLOW_APP_ENGINE_PASSWORD - Dynamically generated password for the Flow App Engine (alternatively use App Engine Token)
+  - FLOW_REGISTRY_PASSWORD - Personal access token with only "read package" access.
 
-3. Push any change to your repository (i.e. changing the response in the index.js)
+4. Push any change to your repository (i.e. changing the response in the index.js)
 
-4. Watch the pipeline and open the URL provided at the end in your Browser
+5. Watch the pipeline and open the URL provided at the end in your Browser
