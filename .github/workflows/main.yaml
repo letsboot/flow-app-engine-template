@@ -58,9 +58,9 @@ jobs:
         sed -ie "s|REPLACE-WITH-TAG|${IMAGE_TAG}|g" flow_environment.json
         cat flow_environment.json
     - name: Create environment
-      run: ~/jelastic/environment/control/getbasicenvsinfo|grep "$SHORT_DOMAIN" && ~/jelastic/environment/control/redeploycontainers --envName "$SHORT_DOMAIN" --nodeGroup cp --tag $IMAGE_TAG 
+      run: ~/jelastic/environment/control/getbasicenvsinfo|grep "$SHORT_DOMAIN" && ~/jelastic/environment/control/redeploycontainers --envName "$SHORT_DOMAIN" --nodeGroup cp --tag $IMAGE_TAG || true
     - name: Redeploy containers
-      run: ~/jelastic/environment/control/getbasicenvsinfo|grep "$SHORT_DOMAIN" || ~/jelastic/environment/control/createenvironment --myparams flow_environment.json
+      run: ~/jelastic/environment/control/getbasicenvsinfo|grep "$SHORT_DOMAIN" || ~/jelastic/environment/control/createenvironment --myparams flow_environment.json || true
     - name: Verfiy environment
       run: ~/jelastic/environment/control/getbasicenvsinfo|grep "$SHORT_DOMAIN" || exit 1
     - name: Deployment URL
