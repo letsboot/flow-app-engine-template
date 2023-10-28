@@ -9,15 +9,11 @@ on:
       - main # Replace with your branch name if needed
 
 env:
-  CI_PROJECT_DIR: ${{ github.workspace }}
-  CI_PROJECT_NAME: ${{ github.repository }}
-  CI_REGISTRY_IMAGE: ghcr.io/${{ github.repository }}/app" # Replace with your Docker image registry
   FLOW_APP_ENGINE_USER: ${{ secrets.FLOW_APP_ENGINE_USER }}
   FLOW_APP_ENGINE_PASSWORD: ${{ secrets.FLOW_APP_ENGINE_PASSWORD }}
   FLOW_REGISTRY_USER: "USERNAME"
   FLOW_REGISTRY_PASSWORD: ${{ secrets.GITHUB_TOKEN }}
   CI_REGISTRY: "ghcr.io" # Replace with your Docker registry URL
-  SHORT_DOMAIN: "$CI_PROJECT_NAME"
   IMAGE_TAG: "latest"
 
 jobs:
@@ -49,7 +45,8 @@ jobs:
       run: echo y| ~/jelastic/users/authentication/signin --login $FLOW_APP_ENGINE_USER --password $FLOW_APP_ENGINE_PASSWORD --platformUrl https://app.appengine.flow.ch/
     - name: Adjust Flow Environment
       run: |
-        # Replace variables in flow_environment.json
+        export SHORT_DOMAIN=$(echo $GITHUB_REPOSITORY | awk -F / '{print $2}')
+        export CI_REGISTRY_IMAGE="ghcr.io/$GITHUB_REPOSITORY/app"
         sed -ie "s|REPLACE-WITH-SHORT-DOMAIN|$SHORT_DOMAIN|g" flow_environment.json
         sed -ie "s|REPLACE-WITH-IMAGE|${CI_PROJECT_PATH}|g" flow_environment.json
         sed -ie "s|REPLACE-WITH-REGISTRY-USER|${FLOW_REGISTRY_USER}|g" flow_environment.json
