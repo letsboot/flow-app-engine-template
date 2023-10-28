@@ -17,6 +17,8 @@ env:
   FLOW_REGISTRY_USER: ${{ secrets.FLOW_REGISTRY_USER }}
   FLOW_REGISTRY_PASSWORD: ${{ secrets.FLOW_REGISTRY_PASSWORD }}
   CI_REGISTRY: "ghcr.io" # Replace with your Docker registry URL
+  SHORT_DOMAIN: "$CI_PROJECT_NAME"
+  IMAGE_TAG: "latest"
 
 jobs:
   # build:
@@ -38,13 +40,13 @@ jobs:
     steps:
     - name: Checkout Code
       uses: actions/checkout@v2
-    - name: Deploy
+    - name: Copy Jelastic
       run: |
         cp -vr /root/jelastic* ~/ 
-        echo y| ~/jelastic/users/authentication/signin --login $FLOW_APP_ENGINE_USER --password $FLOW_APP_ENGINE_PASSWORD --platformUrl https://app.appengine.flow.ch/
-        SHORT_DOMAIN="$CI_PROJECT_NAME"
-        IMAGE_TAG="latest"
-        
+    - name: Login to Flow
+      run: echo y| ~/jelastic/users/authentication/signin --login $FLOW_APP_ENGINE_USER --password $FLOW_APP_ENGINE_PASSWORD --platformUrl https://app.appengine.flow.ch/
+    - name: Adjust Flow Environment
+      run: |
         # Replace variables in flow_environment.json
         sed -ie "s|REPLACE-WITH-SHORT-DOMAIN|$SHORT_DOMAIN|g" flow_environment.json
         sed -ie "s|REPLACE-WITH-IMAGE|${CI_PROJECT_PATH}|g" flow_environment.json
@@ -53,9 +55,13 @@ jobs:
         sed -ie "s|REPLACE-WITH-REGISTRY-URL|${CI_REGISTRY}|g" flow_environment.json
         sed -ie "s|REPLACE-WITH-TAG|${IMAGE_TAG}|g" flow_environment.json
         cat flow_environment.json
-
-        # Deploy or create environment
-        ~/jelastic/environment/control/getbasicenvsinfo|grep "$SHORT_DOMAIN" && ~/jelastic/environment/control/redeploycontainers --envName "$SHORT_DOMAIN" --nodeGroup cp --tag $IMAGE_TAG || ~/jelastic/environment/control/createenvironment --myparams flow_environment.json
-        ~/jelastic/environment/control/getbasicenvsinfo|grep "$SHORT_DOMAIN" || exit 1
+    - name: Create environment
+      run: ~/jelastic/environment/control/getbasicenvsinfo|grep "$SHORT_DOMAIN" && ~/jelastic/environment/control/redeploycontainers --envName "$SHORT_DOMAIN" --nodeGroup cp --tag $IMAGE_TAG 
+    - name: Redeploy containers
+      run: ~/jelastic/environment/control/getbasicenvsinfo|grep "$SHORT_DOMAIN" || ~/jelastic/environment/control/createenvironment --myparams flow_environment.json
+    - name: Verfiy environment
+      run: ~/jelastic/environment/control/getbasicenvsinfo|grep "$SHORT_DOMAIN" || exit 1
+    - name: Deployment URL
+      run: |
         echo "## SUCCESSFULLY DEPLOYED!"
         echo "URL: https://$SHORT_DOMAIN.appengine.flow.ch"
